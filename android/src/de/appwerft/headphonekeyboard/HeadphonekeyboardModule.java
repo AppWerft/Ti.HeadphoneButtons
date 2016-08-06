@@ -8,6 +8,7 @@
  */
 package de.appwerft.headphonekeyboard;
 
+import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -18,13 +19,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 @Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonekeyboard")
 public class HeadphonekeyboardModule extends KrollModule {
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
 	MediaButtonIntentReceiver receiver;
+	KrollFunction callback;
 
 	public HeadphonekeyboardModule() {
 		super();
@@ -55,16 +56,20 @@ public class HeadphonekeyboardModule extends KrollModule {
 			}
 			int action = event.getAction();
 			if (action == KeyEvent.ACTION_DOWN) {
-				// do something
-				Toast.makeText(context, "BUTTON PRESSED!", Toast.LENGTH_SHORT)
-						.show();
+				KrollDict dict = new KrollDict();
+				dict.put("keycode", action);
+				callback.call(getKrollObject(), dict);
+
 			}
-			abortBroadcast();
+			// abortBroadcast();
 		}
 	}
 
 	@Kroll.method
-	public void addEventListener(String event, KrollFunction kfn) {
+	public void addEventListener(String event, KrollFunction fn) {
+		if (fn != null && fn instanceof KrollFunction) {
+			callback = (KrollFunction) fn;
+		}
 		Context ctx = TiApplication.getInstance().getApplicationContext();
 		IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
 		receiver = new MediaButtonIntentReceiver();
