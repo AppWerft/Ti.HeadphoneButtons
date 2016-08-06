@@ -8,30 +8,73 @@
  */
 package de.appwerft.headphonekeyboard;
 
+import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
-
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 @Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonekeyboard")
 public class HeadphonekeyboardModule extends KrollModule {
-
-	// Standard Debugging variables
-	private static final String LCAT = "HeadphonekeyboardModule";
-
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
+	MediaButtonIntentReceiver receiver;
 
 	public HeadphonekeyboardModule() {
 		super();
+
 	}
 
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app) {
-		Log.d(LCAT, "inside onAppCreate");
 
+	}
+
+	public class MediaButtonIntentReceiver extends BroadcastReceiver {
+
+		public MediaButtonIntentReceiver() {
+			super();
+		}
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String intentAction = intent.getAction();
+			if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+				return;
+			}
+			KeyEvent event = (KeyEvent) intent
+					.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+			if (event == null) {
+				return;
+			}
+			int action = event.getAction();
+			if (action == KeyEvent.ACTION_DOWN) {
+				// do something
+				Toast.makeText(context, "BUTTON PRESSED!", Toast.LENGTH_SHORT)
+						.show();
+			}
+			abortBroadcast();
+		}
+	}
+
+	@Kroll.method
+	public void addEventListener(String event, KrollFunction kfn) {
+		Context ctx = TiApplication.getInstance().getApplicationContext();
+		IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+		receiver = new MediaButtonIntentReceiver();
+		ctx.registerReceiver(receiver, filter);
+	}
+
+	@Kroll.method
+	public void removeEventListener(String event) {
+		Context ctx = TiApplication.getInstance().getApplicationContext();
+		ctx.unregisterReceiver(receiver);
 	}
 
 }
