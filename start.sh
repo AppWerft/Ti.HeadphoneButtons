@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPID=dde.appwerft.headphonekeyboard
+APPID=dde.appwerft.headphonebuttons
 VERSION=1.0.0
 
 #cp android/assets/* iphone/

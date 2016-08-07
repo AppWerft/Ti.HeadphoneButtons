@@ -6,7 +6,7 @@
  * Please see the LICENSE included with this distribution for details.
  *
  */
-package de.appwerft.headphonekeyboard;
+package de.appwerft.headphonebuttons;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.KeyEvent;
 
-@Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonekeyboard")
+@Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonebuttons")
 public class HeadphonekeyboardModule extends KrollModule {
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;

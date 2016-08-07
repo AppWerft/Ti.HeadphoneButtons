@@ -11,7 +11,7 @@ This little Titanium module is for listening to headset buttons. Details you can
 
 ```javascript
 require("de.appwerft.headsetbuttons").addEventListener("keypressed",function(evt){
-console.log(evt.keycode);
+        console.log(evt.keycode);
 });
 ```
 Add “android.permission.BLUETOOTH” permission if you want to support bluetooth headset.
