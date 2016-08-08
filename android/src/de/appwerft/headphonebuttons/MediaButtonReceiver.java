@@ -14,23 +14,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
 	public static final String LCAT = "HeadPhoneButtons  📢📢";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String intentAction = intent.getAction();
-
 		KeyEvent event = (KeyEvent) intent
 				.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 		Log.d(LCAT, event.toString());
-		if (event == null) {
-			return;
-		}
-		int action = event.getAction();
-
 		KrollDict dict = new KrollDict();
 		dict.put("action", event.getAction());
 		dict.put("keyCode", event.getKeyCode());
@@ -39,5 +34,23 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 		HeadphonebuttonsModule.sendBack(dict);
 
 		// abortBroadcast();
+	}
+
+	private class GestureListener extends
+			GestureDetector.SimpleOnGestureListener {
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			return true;
+		}
+
+		// event when double tap occurs
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			float x = e.getX();
+			float y = e.getY();
+
+			return true;
+		}
 	}
 }

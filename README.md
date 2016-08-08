@@ -12,7 +12,8 @@ This little Titanium module is for listening to headset buttons. Details you can
 ```javascript
 require("de.appwerft.headphonebuttons").registerListener();
 Ti.App.addEventListener("mediaButton", function(e) {
-    console.log(e);
+    console.log(e.keyCode);
+    console.log(e.action);
 });
 ```
 This you need in you Manifest:
