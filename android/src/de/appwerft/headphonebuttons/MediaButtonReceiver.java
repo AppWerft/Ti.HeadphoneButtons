@@ -19,29 +19,25 @@ import android.view.KeyEvent;
 public class MediaButtonReceiver extends BroadcastReceiver {
 	public static final String LCAT = "HeadPhoneButtons  📢📢";
 
-	public MediaButtonReceiver() {
-		super();
-	}
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String intentAction = intent.getAction();
-		Log.d(LCAT,
-				">>>>>>>>>>>>>>>>>>>>>>>>>>>> onReceive " + intent.toString());
-		if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-			return;
-		}
+
 		KeyEvent event = (KeyEvent) intent
 				.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+		Log.d(LCAT, event.toString());
 		if (event == null) {
 			return;
 		}
 		int action = event.getAction();
-		if (action == KeyEvent.ACTION_DOWN) {
-			KrollDict dict = new KrollDict();
-			dict.put("keycode", action);
-			// callback.callAsync(getKrollObject(), dict);
-		}
+
+		KrollDict dict = new KrollDict();
+		dict.put("action", event.getAction());
+		dict.put("keyCode", event.getKeyCode());
+
+		Log.d(LCAT, dict.toString());
+		HeadphonebuttonsModule.sendBack(dict);
+
 		// abortBroadcast();
 	}
 }

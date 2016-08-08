@@ -27,8 +27,9 @@ import android.view.KeyEvent;
 public class HeadphonebuttonsModule extends KrollModule {
 	public static final String LCAT = "HeadPhoneButtons  📢📢";
 	MediaButtonReceiver mediaButtonReceiver;
-	KrollFunction callback;
+	static KrollFunction callback;
 	ComponentName receiver;
+	static TiApplication mApp;
 
 	public HeadphonebuttonsModule() {
 		super();
@@ -36,15 +37,13 @@ public class HeadphonebuttonsModule extends KrollModule {
 	}
 
 	@Kroll.onAppCreate
-	public static void onAppCreate(TiApplication app) {
-
+	public static void onAppCreate(final TiApplication app) {
+		mApp = app;
 	}
 
 	@Kroll.method
-	public void addEventListener(String event, KrollFunction fn) {
-		if (fn != null && fn instanceof KrollFunction) {
-			callback = (KrollFunction) fn;
-		}
+	public void registerListener() {
+
 		Context ctx = TiApplication.getAppRootOrCurrentActivity()
 				.getApplicationContext();
 		AudioManager audioManager = (AudioManager) ctx
@@ -58,15 +57,14 @@ public class HeadphonebuttonsModule extends KrollModule {
 
 		ComponentName receiver = new ComponentName(ctx.getPackageName(),
 				MediaButtonReceiver.class.getName());
-		mediaButtonReceiver = new MediaButtonReceiver();
+		// mediaButtonReceiver = new MediaButtonReceiver();
 		audioManager.registerMediaButtonEventReceiver(receiver);
+		// ctx.registerReceiver(mediaButtonReceiver, new IntentFilter());
 		Log.d(LCAT, "MediaButtonEventReceiver registered");
 	}
 
-	@Kroll.method
-	public void removeEventListener(String event) {
-		Context ctx = TiApplication.getInstance().getApplicationContext();
-		// ctx.unregisterReceiver(receiver);
+	public static void sendBack(KrollDict event) {
+		mApp.fireAppEvent("mediaButton", event);
 	}
 
 }
