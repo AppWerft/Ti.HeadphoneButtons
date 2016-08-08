@@ -15,19 +15,22 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 @Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonebuttons")
-public class HeadphonekeyboardModule extends KrollModule {
-	// You can define constants with @Kroll.constant, for example:
-	// @Kroll.constant public static final String EXTERNAL_NAME = value;
-	MediaButtonIntentReceiver receiver;
+public class HeadphonebuttonsModule extends KrollModule {
+	public static final String LCAT = "HeadPhoneButtons  📢📢";
+	MediaButtonReceiver mediaButtonReceiver;
 	KrollFunction callback;
+	ComponentName receiver;
 
-	public HeadphonekeyboardModule() {
+	public HeadphonebuttonsModule() {
 		super();
 
 	}
@@ -37,49 +40,33 @@ public class HeadphonekeyboardModule extends KrollModule {
 
 	}
 
-	public class MediaButtonIntentReceiver extends BroadcastReceiver {
-
-		public MediaButtonIntentReceiver() {
-			super();
-		}
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String intentAction = intent.getAction();
-			if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-				return;
-			}
-			KeyEvent event = (KeyEvent) intent
-					.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-			if (event == null) {
-				return;
-			}
-			int action = event.getAction();
-			if (action == KeyEvent.ACTION_DOWN) {
-				KrollDict dict = new KrollDict();
-				dict.put("keycode", action);
-				callback.call(getKrollObject(), dict);
-
-			}
-			// abortBroadcast();
-		}
-	}
-
 	@Kroll.method
 	public void addEventListener(String event, KrollFunction fn) {
 		if (fn != null && fn instanceof KrollFunction) {
 			callback = (KrollFunction) fn;
 		}
-		Context ctx = TiApplication.getInstance().getApplicationContext();
-		IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
-		receiver = new MediaButtonIntentReceiver();
-		ctx.registerReceiver(receiver, filter);
+		Context ctx = TiApplication.getAppRootOrCurrentActivity()
+				.getApplicationContext();
+		AudioManager audioManager = (AudioManager) ctx
+				.getSystemService(Context.AUDIO_SERVICE);
+		audioManager.requestAudioFocus(
+				new AudioManager.OnAudioFocusChangeListener() {
+					public void onAudioFocusChange(int focusChange) {
+					}
+				}, AudioManager.STREAM_MUSIC,
+				AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
+		ComponentName receiver = new ComponentName(ctx.getPackageName(),
+				MediaButtonReceiver.class.getName());
+		mediaButtonReceiver = new MediaButtonReceiver();
+		audioManager.registerMediaButtonEventReceiver(receiver);
+		Log.d(LCAT, "MediaButtonEventReceiver registered");
 	}
 
 	@Kroll.method
 	public void removeEventListener(String event) {
 		Context ctx = TiApplication.getInstance().getApplicationContext();
-		ctx.unregisterReceiver(receiver);
+		// ctx.unregisterReceiver(receiver);
 	}
 
 }

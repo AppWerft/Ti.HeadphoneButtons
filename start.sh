@@ -1,7 +1,7 @@
 #!/bin/bash
 
-APPID=dde.appwerft.headphonebuttons
-VERSION=1.0.0
+APPID=de.appwerft.headphonebuttons
+VERSION=1.0.1
 
 #cp android/assets/* iphone/
 cd android;ant clean; rm -rf build/*;ant ;  unzip -uo  dist/$APPID-android-$VERSION.zip  -d  ~/Library/Application\ Support/Titanium/;cd ..

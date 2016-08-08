@@ -1,4 +1,4 @@
-Ti.HeadsetButtons
+Ti.HeadphoneButtons
 =================
 
 This little Titanium module is for listening to headset buttons. Details you can find [on Android page](https://source.android.com/devices/accessories/headset/specification.html)
@@ -10,7 +10,7 @@ This little Titanium module is for listening to headset buttons. Details you can
 ##Usage
 
 ```javascript
-require("de.appwerft.headsetbuttons").addEventListener("keypressed",function(evt){
+require("de.appwerft.headphonebuttons").addEventListener("keypressed",function(evt){
         console.log(evt.keycode);
 });
 ```

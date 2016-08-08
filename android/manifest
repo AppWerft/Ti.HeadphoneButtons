@@ -2,17 +2,17 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.0
+version: 1.0.1
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
-description: headphonekeyboard
+description: Ti.HeadphoneButtons
 author: Rainer Schleevoigt
 license: Specify your license
 copyright: Copyright (c) 2016 by 
 
 # these should not be edited
 name: HeadphoneButtons
-moduleid: de.appwerft.headphonekeyboard
+moduleid: de.appwerft.headphonebuttons
 guid: 819af1f8-e249-4d2c-893a-81d21420c4c9
 platform: android
 minsdk: 3.5.1.GA
