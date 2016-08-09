@@ -18,7 +18,7 @@ Ti.App.addEventListener("mediaButton", function(e) {
 ```
 This you need in you Manifest:
 ```xml
-<receiver android:name="de.appwerft.headphonebuttons$MediaButtonIntentReceiver">
+<receiver android:name="de.appwerft.headphonebuttons.MediaButtonReceiver">
 <intent-filter>
     <action android:name="android.media.AUDIO_BECOMING_NOISY" />
     <action android:name="android.intent.action.MEDIA_BUTTON"/>

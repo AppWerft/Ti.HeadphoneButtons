@@ -35,22 +35,6 @@ public class MediaButtonReceiver extends BroadcastReceiver {
 
 		// abortBroadcast();
 	}
+	// http://stackoverflow.com/questions/9971224/how-to-implement-double-click-in-android
 
-	private class GestureListener extends
-			GestureDetector.SimpleOnGestureListener {
-
-		@Override
-		public boolean onDown(MotionEvent e) {
-			return true;
-		}
-
-		// event when double tap occurs
-		@Override
-		public boolean onDoubleTap(MotionEvent e) {
-			float x = e.getX();
-			float y = e.getY();
-
-			return true;
-		}
-	}
 }
