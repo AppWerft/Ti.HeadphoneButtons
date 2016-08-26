@@ -15,20 +15,16 @@ import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
 @Kroll.module(name = "Headphonekeyboard", id = "de.appwerft.headphonebuttons")
 public class HeadphonebuttonsModule extends KrollModule {
-
 	public static final String LCAT = "HeadPhoneButtons  📢📢";
-	MediaButtonReceiver mediaButtonReceiver;
+	HeadphoneButtonReceiver headphoneButtonReceiver;
 	static KrollFunction callback;
 	ComponentName receiver;
 	static TiApplication mApp;
@@ -36,7 +32,6 @@ public class HeadphonebuttonsModule extends KrollModule {
 
 	public HeadphonebuttonsModule() {
 		super();
-
 	}
 
 	@Kroll.onAppCreate
@@ -57,24 +52,36 @@ public class HeadphonebuttonsModule extends KrollModule {
 
 	@Kroll.method
 	public void registerListener() {
-
 		Context ctx = TiApplication.getAppRootOrCurrentActivity()
 				.getApplicationContext();
 		audioManager = (AudioManager) ctx
 				.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.requestAudioFocus(
-				new AudioManager.OnAudioFocusChangeListener() {
-					public void onAudioFocusChange(int focusChange) {
-					}
-				}, AudioManager.STREAM_MUSIC,
+		audioManager.requestAudioFocus(new OnAudioFocusChangeListener(),
+				AudioManager.STREAM_MUSIC,
 				AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-
-		ComponentName receiver = new ComponentName(ctx.getPackageName(),
-				MediaButtonReceiver.class.getName());
-
-		audioManager.registerMediaButtonEventReceiver(receiver);
-		Log.d(LCAT, "MediaButtonEventReceiver registered");
+		audioManager.registerMediaButtonEventReceiver(new ComponentName(ctx
+				.getPackageName(), HeadphoneButtonReceiver.class.getName()));
+		Log.d(LCAT, "headphoneButtonReceiver registered");
 	}
+
+	private class OnAudioFocusChangeListener implements
+			AudioManager.OnAudioFocusChangeListener {
+		@Override
+		public void onAudioFocusChange(int focusChange) {
+			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+				Log.e("ClassOnAudioFocusChangeListener: ",
+						"AUDIOFOCUS_LOSS_TRANSIENT");
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+				Log.e("ClassOnAudioFocusChangeListener: ",
+						"AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+				Log.e("ClassOnAudioFocusChangeListener: ", "AUDIOFOCUS_GAIN");
+				// mAudioManager.registerMediaButtonEventReceiver(mMediaButtonEventComponenName);
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+				Log.e("ClassOnAudioFocusChangeListener: ", "AUDIOFOCUS_LOSS");
+			}
+		}
+	};
 
 	public static void sendBack(KrollDict event) {
 		mApp.fireAppEvent("mediaButton", event);

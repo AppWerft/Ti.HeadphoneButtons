@@ -2,7 +2,7 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.1
+version: 1.0.3
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
 description: Ti.HeadphoneButtons
@@ -15,4 +15,4 @@ name: HeadphoneButtons
 moduleid: de.appwerft.headphonebuttons
 guid: 819af1f8-e249-4d2c-893a-81d21420c4c9
 platform: android
-minsdk: 3.5.1.GA
+minsdk: 5.4.0.GA
