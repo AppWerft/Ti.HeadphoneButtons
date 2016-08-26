@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:module xmlns:ti="http://ti.appcelerator.org" xmlns:android="http://schemas.android.com/apk/res/android">
-	<!--
-		Similar to tiapp.xml, but contains module/platform specific
-		configuration in <iphone>, <android>, and <mobileweb> sections
-	-->
+	
 	<iphone>
 	</iphone>
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
+		<receiver android:name="de.appwerft.headphonebuttons.MediaButtonReceiver" android:enabled="true" android:exported="true">
+			<intent-filter android:priority="999" android:label="Listener for headset buttons">
+			</intent-filter>
+		</receiver>
 	</android>
 	<mobileweb>
 	</mobileweb>
