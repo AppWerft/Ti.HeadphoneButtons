@@ -14,8 +14,8 @@ public class HeadphoneButtonReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(LCAT + "🎧 🎧 🎧 Keycode from MediabuttonIntent",
-				intent.getAction());
+		Log.d(LCAT + "🎧 🎧 🎧 Keycode from MediabuttonIntent", intent
+				.getAction().toString());
 		KrollDict dict = new KrollDict();
 		if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
 			int newVolume = intent.getIntExtra(
@@ -60,7 +60,16 @@ public class HeadphoneButtonReceiver extends BroadcastReceiver {
 				dict.put("keyCode", event.getKeyCode());
 				if (event.getKeyCode() == KeyEvent.KEYCODE_HEADSETHOOK)
 					dict.put("keyName", "startstop");
-
+				else if (event.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY)
+					dict.put("keyName", "media_play");
+				else if (event.getKeyCode() == KeyEvent.KEYCODE_MEDIA_NEXT)
+					dict.put("keyName", "media_next");
+				else if (event.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PAUSE)
+					dict.put("keyName", "media_pause");
+				else if (event.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PREVIOUS)
+					dict.put("keyName", "media_previous");
+				else
+					dict.put("keyName", "unknown");
 				HeadphonebuttonsModule.sendBack(dict);
 			}
 		}

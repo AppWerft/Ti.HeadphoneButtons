@@ -31,7 +31,7 @@ public class HeadphonebuttonsModule extends KrollModule {
 	HeadphoneButtonReceiver headphoneButtonReceiver;
 	static KrollFunction callback;
 	private ComponentName receiver;
-	static TiApplication mApp;
+	static TiApplication tiapp;
 	private AudioManager audioManager;
 	private IntentFilter uiIntentFilter;
 	private Activity activity;
@@ -43,7 +43,7 @@ public class HeadphonebuttonsModule extends KrollModule {
 	@Kroll.onAppCreate
 	public static void onAppCreate(final TiApplication app) {
 
-		mApp = app;
+		tiapp = app;
 	}
 
 	public void onDestroy() {
@@ -98,7 +98,7 @@ public class HeadphonebuttonsModule extends KrollModule {
 	};
 
 	public static void sendBack(KrollDict event) {
-		mApp.fireAppEvent("mediaButton", event);
+		tiapp.fireAppEvent("mediaButton", event);
 	}
 
 	/**
@@ -125,20 +125,20 @@ public class HeadphonebuttonsModule extends KrollModule {
 								Utils.getAdjustedKeyCode(navigationKeyEvent));
 						switch (Utils.getAdjustedKeyCode(navigationKeyEvent)) {
 						case KeyEvent.KEYCODE_MEDIA_NEXT:
-							dict.put("keyName", "medianext");
+							dict.put("keyName", "media_next");
 							HeadphonebuttonsModule.sendBack(dict);
 							break;
 						case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-							dict.put("keyName", "previous");
+							dict.put("keyName", "media_previous");
 							HeadphonebuttonsModule.sendBack(dict);
 							break;
 						case KeyEvent.KEYCODE_HEADSETHOOK:
 						case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-							dict.put("keyName", "mediaplaypause");
+							dict.put("keyName", "media_playpause");
 							HeadphonebuttonsModule.sendBack(dict);
 							break;
 						case KeyEvent.KEYCODE_MEDIA_STOP:
-							dict.put("keyName", "mediastop");
+							dict.put("keyName", "media_stop");
 							HeadphonebuttonsModule.sendBack(dict);
 							break;
 						default:
@@ -154,5 +154,4 @@ public class HeadphonebuttonsModule extends KrollModule {
 
 		}
 	};
-
 }

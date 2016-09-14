@@ -19,22 +19,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.text.Html;
-import android.text.Spanned;
-import android.util.Log;
 import android.view.KeyEvent;
 
 /**
