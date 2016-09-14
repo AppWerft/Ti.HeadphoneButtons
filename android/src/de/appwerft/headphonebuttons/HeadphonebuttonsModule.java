@@ -16,8 +16,11 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,9 +30,11 @@ public class HeadphonebuttonsModule extends KrollModule {
 	public static final String LCAT = "HeadPhoneButtons  📢📢";
 	HeadphoneButtonReceiver headphoneButtonReceiver;
 	static KrollFunction callback;
-	ComponentName receiver;
+	private ComponentName receiver;
 	static TiApplication mApp;
-	AudioManager audioManager;
+	private AudioManager audioManager;
+	private IntentFilter uiIntentFilter;
+	private Activity activity;
 
 	public HeadphonebuttonsModule() {
 		super();
@@ -44,6 +49,7 @@ public class HeadphonebuttonsModule extends KrollModule {
 	public void onDestroy() {
 		if (audioManager != null)
 			audioManager.unregisterMediaButtonEventReceiver(receiver);
+		activity.unregisterReceiver(uiMediaReceiver);
 	}
 
 	@Override
@@ -52,35 +58,9 @@ public class HeadphonebuttonsModule extends KrollModule {
 		return super.addEventListener(arg0, arg1);
 	}
 
-	boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.d(LCAT, "🎧 🎧 🎧 Keycode from onKeyDownIntent" + keyCode);
-
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-			// code for fast forward
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_NEXT:
-			// code for next
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-			// code for play/pause
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			// code for previous
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_REWIND:
-			// code for rewind
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_STOP:
-			// code for stop
-			return true;
-		}
-		return false;
-	}
-
 	@Kroll.method
 	public void registerListener() {
-		Activity activity = TiApplication.getAppRootOrCurrentActivity();
+		activity = TiApplication.getAppRootOrCurrentActivity();
 
 		Context ctx = activity.getApplicationContext();
 		audioManager = (AudioManager) ctx
@@ -90,6 +70,11 @@ public class HeadphonebuttonsModule extends KrollModule {
 				AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 		audioManager.registerMediaButtonEventReceiver(new ComponentName(ctx
 				.getPackageName(), HeadphoneButtonReceiver.class.getName()));
+		uiIntentFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+		uiIntentFilter
+				.addAction(Constants.INTENT_ACTION_VIEW_MEDIA_LIST_KEYPRESS);
+		uiIntentFilter.setPriority(Integer.MAX_VALUE);
+		activity.registerReceiver(uiMediaReceiver, uiIntentFilter);
 		Log.d(LCAT, "headphoneButtonReceiver registered");
 	}
 
@@ -115,5 +100,59 @@ public class HeadphonebuttonsModule extends KrollModule {
 	public static void sendBack(KrollDict event) {
 		mApp.fireAppEvent("mediaButton", event);
 	}
+
+	/**
+	 * Local broadcast receiver that allows us to handle media button events for
+	 * navigation inside the activity.
+	 */
+	private BroadcastReceiver uiMediaReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())
+					|| Constants.INTENT_ACTION_VIEW_MEDIA_LIST_KEYPRESS
+							.equals(intent.getAction())) {
+				KeyEvent navigationKeyEvent = (KeyEvent) intent.getExtras()
+						.get(Intent.EXTRA_KEY_EVENT);
+				int keyCode = navigationKeyEvent.getKeyCode();
+				if (Utils.isMediaButton(keyCode)) {
+					Log.d(LCAT,
+							"Media Button Selector: UI is directly handling key: "
+									+ navigationKeyEvent);
+					if (navigationKeyEvent.getAction() == KeyEvent.ACTION_UP) {
+						KrollDict dict = new KrollDict();
+						dict.put("keyCode",
+								Utils.getAdjustedKeyCode(navigationKeyEvent));
+						switch (Utils.getAdjustedKeyCode(navigationKeyEvent)) {
+						case KeyEvent.KEYCODE_MEDIA_NEXT:
+							dict.put("keyName", "medianext");
+							HeadphonebuttonsModule.sendBack(dict);
+							break;
+						case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+							dict.put("keyName", "previous");
+							HeadphonebuttonsModule.sendBack(dict);
+							break;
+						case KeyEvent.KEYCODE_HEADSETHOOK:
+						case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+							dict.put("keyName", "mediaplaypause");
+							HeadphonebuttonsModule.sendBack(dict);
+							break;
+						case KeyEvent.KEYCODE_MEDIA_STOP:
+							dict.put("keyName", "mediastop");
+							HeadphonebuttonsModule.sendBack(dict);
+							break;
+						default:
+							break;
+						}
+					}
+					if (isOrderedBroadcast()) {
+						abortBroadcast();
+					}
+				}
+
+			}
+
+		}
+	};
 
 }

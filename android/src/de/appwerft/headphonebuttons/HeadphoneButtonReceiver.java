@@ -58,8 +58,9 @@ public class HeadphoneButtonReceiver extends BroadcastReceiver {
 					.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 			if (event != null) {
 				dict.put("keyCode", event.getKeyCode());
-				if (event.getKeyCode() == 79)
+				if (event.getKeyCode() == KeyEvent.KEYCODE_HEADSETHOOK)
 					dict.put("keyName", "startstop");
+
 				HeadphonebuttonsModule.sendBack(dict);
 			}
 		}
