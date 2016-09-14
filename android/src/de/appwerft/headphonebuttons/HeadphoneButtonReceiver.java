@@ -14,8 +14,9 @@ public class HeadphoneButtonReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Log.d(LCAT + "🎧 🎧 🎧 Keycode from MediabuttonIntent",
+				intent.getAction());
 		KrollDict dict = new KrollDict();
-		// Log.d(LCAT, intent.getAction());
 		if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
 			int newVolume = intent.getIntExtra(
 					"android.media.EXTRA_VOLUME_STREAM_VALUE", 0);

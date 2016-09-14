@@ -15,6 +15,7 @@ import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.media.AudioManager;
@@ -36,6 +37,7 @@ public class HeadphonebuttonsModule extends KrollModule {
 
 	@Kroll.onAppCreate
 	public static void onAppCreate(final TiApplication app) {
+
 		mApp = app;
 	}
 
@@ -50,10 +52,37 @@ public class HeadphonebuttonsModule extends KrollModule {
 		return super.addEventListener(arg0, arg1);
 	}
 
+	boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.d(LCAT, "🎧 🎧 🎧 Keycode from onKeyDownIntent" + keyCode);
+
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+			// code for fast forward
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_NEXT:
+			// code for next
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+			// code for play/pause
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+			// code for previous
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_REWIND:
+			// code for rewind
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_STOP:
+			// code for stop
+			return true;
+		}
+		return false;
+	}
+
 	@Kroll.method
 	public void registerListener() {
-		Context ctx = TiApplication.getAppRootOrCurrentActivity()
-				.getApplicationContext();
+		Activity activity = TiApplication.getAppRootOrCurrentActivity();
+
+		Context ctx = activity.getApplicationContext();
 		audioManager = (AudioManager) ctx
 				.getSystemService(Context.AUDIO_SERVICE);
 		audioManager.requestAudioFocus(new OnAudioFocusChangeListener(),
