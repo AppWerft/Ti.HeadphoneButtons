@@ -7,6 +7,8 @@ This little Titanium module is for listening to headset buttons. Details you can
 
 <img src="http://theinstructional.s3.amazonaws.com/earphones/original-earphones.jpg" width=500 />
 
+<img src="http://i.imgur.com/iFZykem.jpg" width=500 />
+
 ##Usage
 
 ```javascript
